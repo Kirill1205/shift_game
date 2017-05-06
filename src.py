@@ -5,25 +5,24 @@ size = 4
 def shift(event, d):
     if d == 1:
         for row in range(4):
-            for cell in range(2 + 4 * row, -1 + 4 * row, -1):
-                if cells[cell]['text'] == '':
-                    continue
-                i = 1
-                while cell + i < 4 + 4 * row and cells[cell + i]['text'] == '':
-                    i += 1
-                print(cell, i)
-                if cell + i == 4 + 4 * row:
-                    i -= 1
-                print(cell, i)
-                if cells[cell + i]['text'] == cells[cell]['text']:
-                    cells[cell + i]['text'] = str(int(cells[cell]['text']) + int(cells[cell + i]['text']))
-                    cells[cell]['text'] = ''
-                elif cells[cell + i]['text'] == '':
-                    cells[cell + i]['text'] = cells[cell]['text']
-                    cells[cell]['text'] = ''
-                elif i != 1:
-                    cells[cell + i - 1]['text'] = cells[cell]['text']
-                    cells[cell]['text'] = ''
+            s = []
+            for col in range(4):
+                p = cells[col + 4 * row]['text']
+                if p != '':
+                    s.append(int(p))
+            s = s[::-1]
+            i = 0
+            while i < len(s) - 1:
+                if s[i] == s[i+1]:
+                    s[i] *= 2
+                    del s[i+1]
+                i += 1
+            s = s[::-1]
+            for col in range(4):
+                if col < (4 - len(s)):
+                    cells[col + 4 * row]['text'] = ''
+                else:
+                    cells[col + 4 * row]['text'] = s[col - (4 - len(s))]
         generate()
 
 def generate():
