@@ -14,44 +14,30 @@ def compress(s):
         s.append(0)
     return s
 
+def reverse_compress_reverse(s):
+    return compress(s[::-1])[::-1]
+
+def by_row(x, y):
+    return y + size * x
+
+def by_col(x, y):
+    return x + size * y
+
+def shift_src(by_index, comp_fun):
+    for x in range(size):
+        s = []
+        for y in range(size):
+            p = cells[by_index(x, y)]['text']
+            s.append(int(p) if p != '' else 0)
+        s = comp_fun(s)
+        for y in range(size):
+            cells[by_index(x, y)]['text'] = s[y] if s[y] != 0 else ''
+
 def shift(event, d):
-    if d == 1:
-        for row in range(size):
-            s = []
-            for col in range(size):
-                p = cells[col + size * row]['text']
-                s.append(int(p) if p != '' else 0)
-            s = compress(s[::-1])[::-1]
-            for col in range(size):
-                cells[col + size * row]['text'] = s[col] if s[col] != 0 else ''
-    if d == 3:
-        for row in range(size):
-            s = []
-            for col in range(size):
-                p = cells[col + size * row]['text']
-                s.append(int(p) if p != '' else 0)
-            s = compress(s)
-            for col in range(size):
-                cells[col + size * row]['text'] = s[col] if s[col] != 0 else ''
-    if d == 0:
-        for col in range(size):
-            s = []
-            for row in range(size):
-                p = cells[col + size * row]['text']
-                s.append(int(p) if p != '' else 0)
-            s = compress(s)
-            for row in range(size):
-                cells[col + size * row]['text'] = s[row] if s[row] != 0 else ''
-    if d == 2:
-        for col in range(size):
-            s = []
-            for row in range(size):
-                p = cells[col + size * row]['text']
-                s.append(int(p) if p != '' else 0)
-            s = compress(s[::-1])[::-1]
-            for row in range(size):
-                cells[col + size * row]['text'] = s[row] if s[row] != 0 else ''
+    shift_src(data[d][0], data[d][1])
     generate()
+
+data = [[by_col, compress], [by_row, reverse_compress_reverse], [by_col, reverse_compress_reverse], [by_row, compress]]
 
 def over(event):
     step = 0
