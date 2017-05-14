@@ -41,8 +41,7 @@ data = [[by_col, compress], [by_row, reverse_compress_reverse], [by_col, reverse
 
 def over(event):
     step = 0
-    while step < 1000:
-        print(step)
+    while True:
         shift(event, step % 4)
         step += 1
 
@@ -52,7 +51,10 @@ def generate():
         if cells[i]['text'] == '':
             free_cells.append(i)
     if len(free_cells) == 0:
-        print("Game over")
+        print("Game over!")
+        print("Your maxumim number:", max(map(lambda x: int(x['text']), cells)))
+        print("Your score:", sum(map(lambda x: int(x['text']), cells)))
+        exit(0)
     else:
         k = random.choice(free_cells)
         cells[k]['text'] = '2'
@@ -65,7 +67,7 @@ frame.bind('<Up>'   , lambda e: shift(e, 0))
 frame.bind('<Right>', lambda e: shift(e, 1))
 frame.bind('<Down>' , lambda e: shift(e, 2))
 frame.bind('<Left>' , lambda e: shift(e, 3))
-frame.bind('<R>' , lambda e: over(e))
+frame.bind('<space>', lambda e: over(e))
 
 cells = []
 for i in range(size**2):
