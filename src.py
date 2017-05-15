@@ -1,6 +1,7 @@
 import tkinter, random
 
 size = 4
+score = 0
 
 def compress(s):
     s = list(filter(lambda x: x != 0, s))
@@ -8,6 +9,8 @@ def compress(s):
     while i < len(s) - 1:
         if s[i] == s[i+1]:
             s[i] *= 2
+            global score
+            score += s[i]
             del s[i+1]
         i += 1
     while len(s) < size:
@@ -53,7 +56,7 @@ def generate():
     if len(free_cells) == 0:
         print("Game over!")
         print("Your maxumim number:", max(map(lambda x: int(x['text']), cells)))
-        print("Your score:", sum(map(lambda x: int(x['text']), cells)))
+        print("Your score:", score)
         exit(0)
     else:
         k = random.choice(free_cells)
