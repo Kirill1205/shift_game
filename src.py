@@ -27,18 +27,45 @@ def by_col(x, y):
     return x + size * y
 
 def shift_src(by_index, comp_fun):
+    result = False
     for x in range(size):
         s = []
         for y in range(size):
             p = cells[by_index(x, y)]['text']
             s.append(int(p) if p != '' else 0)
-        s = comp_fun(s)
+        compressed_s = comp_fun(s)
+        if s != compressed_s:
+            result = True
         for y in range(size):
-            cells[by_index(x, y)]['text'] = s[y] if s[y] != 0 else ''
+            cells[by_index(x, y)]['text'] = compressed_s[y] if compressed_s[y] != 0 else ''
+    return result
+
+def is_game_over():
+    for direction in data:
+        by_index = direction[0]
+        comp_fun = direction[1]
+        for x in range(size):
+            s = []
+            for y in range(size):
+                p = cells[by_index(x, y)]['text']
+                s.append(int(p) if p != '' else 0)
+            compressed_s = comp_fun(s)
+            if s != compressed_s:
+                return False
+    return True
+
+def game_over():
+    print("Game over!")
+    print("Your maxumim number:", max(map(lambda x: int(x['text']), cells)))
+    print("Your score:", score)
+    exit(0)
 
 def shift(event, d):
-    shift_src(data[d][0], data[d][1])
-    generate()
+    if shift_src(data[d][0], data[d][1]):
+        generate()
+    else:
+        if is_game_over():
+            game_over()
 
 data = [[by_col, compress], [by_row, reverse_compress_reverse], [by_col, reverse_compress_reverse], [by_row, compress]]
 
@@ -51,10 +78,7 @@ def over(event):
 def generate():
     free_cells = list(filter(lambda x: x['text'] == '', cells))
     if len(free_cells) == 0:
-        print("Game over!")
-        print("Your maxumim number:", max(map(lambda x: int(x['text']), cells)))
-        print("Your score:", score)
-        exit(0)
+        game_over()
     else:
         random.choice(free_cells)['text'] = random.choice(['2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '4'])
 
