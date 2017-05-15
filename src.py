@@ -49,18 +49,14 @@ def over(event):
         step += 1
 
 def generate():
-    free_cells = []
-    for i in range(len(cells)):
-        if cells[i]['text'] == '':
-            free_cells.append(i)
+    free_cells = list(filter(lambda x: x['text'] == '', cells))
     if len(free_cells) == 0:
         print("Game over!")
         print("Your maxumim number:", max(map(lambda x: int(x['text']), cells)))
         print("Your score:", score)
         exit(0)
     else:
-        k = random.choice(free_cells)
-        cells[k]['text'] = '2'
+        random.choice(free_cells)['text'] = random.choice(['2', '2', '2', '2', '2', '2', '2', '2', '2', '2', '4'])
 
 root = tkinter.Tk()
 frame = tkinter.Frame(root)
