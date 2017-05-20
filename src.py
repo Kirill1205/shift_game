@@ -58,22 +58,40 @@ def game_over():
     print("Game over!")
     print("Your maxumim number:", max(map(lambda x: int(x['text']), cells)))
     print("Your score:", score)
-    exit(0)
 
 def shift(event, d):
     if shift_src(data[d][0], data[d][1]):
         generate()
+        return True
     else:
         if is_game_over():
             game_over()
 
 data = [[by_col, compress], [by_row, reverse_compress_reverse], [by_col, reverse_compress_reverse], [by_row, compress]]
 
-def over(event):
+def over_r(event):
+    while not is_game_over():
+        shift(event, random.randint(0, 3))
+
+def over_l_d(event):
     step = 0
+    failed = 0
     while True:
-        shift(event, step % 4)
+        if not shift(event, step % 2 + 1):
+            failed += 1
+        if failed == 2:
+            failed = 0
+            if not shift(event, 0):
+                failed += 1
+            if not shift(event, 2):
+                failed += 1
+            if failed == 2:
+                shift(event, 3)
+                shift(event, 1)
+                failed = 0
         step += 1
+        if is_game_over():
+            return
 
 def generate():
     free_cells = list(filter(lambda x: x['text'] == '', cells))
@@ -90,7 +108,8 @@ frame.bind('<Up>'   , lambda e: shift(e, 0))
 frame.bind('<Right>', lambda e: shift(e, 1))
 frame.bind('<Down>' , lambda e: shift(e, 2))
 frame.bind('<Left>' , lambda e: shift(e, 3))
-frame.bind('<space>', lambda e: over(e))
+frame.bind('<space>', lambda e: over_l_d(e))
+frame.bind('<r>'    , lambda e: over_r  (e))
 
 cells = []
 for i in range(size**2):
